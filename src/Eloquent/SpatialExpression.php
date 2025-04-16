@@ -2,12 +2,12 @@
 
 namespace Grimzy\LaravelMysqlSpatial\Eloquent;
 
+use Illuminate\Database\Grammar;
 use Illuminate\Database\Query\Expression;
 
 class SpatialExpression extends Expression
 {
-    #[\ReturnTypeWillChange]
-    public function getValue($grammar)
+    public function getValue(Grammar $grammar)
     {
         return "ST_GeomFromText(?, ?, 'axis-order=long-lat')";
     }

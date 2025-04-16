@@ -3,3 +3,7 @@ vendor/
 composer.lock
 _db/
 build/
+_db*
+.phpunit.result.cache
+
+.phpunit.cache

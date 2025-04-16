@@ -1,11 +1,21 @@
 <?php
 
+namespace Tests\Integration\Migrations;
+
 use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Builder;
+use Illuminate\Support\Facades\DB;
 
-class UpdateLocationTable extends Migration
+class UpdateTables extends Migration
 {
+    private Builder $schema;
+
+    public function __construct()
+    {
+        $this->schema = app('db')->getSchemaBuilder();
+    }
+
     /**
      * Run the migrations.
      *
@@ -14,9 +24,9 @@ class UpdateLocationTable extends Migration
     public function up()
     {
         // MySQL < 5.7.5: table has to be MyISAM
-        \DB::statement('ALTER TABLE geometry ENGINE = MyISAM');
+        DB::statement('ALTER TABLE geometry ENGINE = MyISAM');
 
-        Schema::table('geometry', function (Blueprint $table) {
+        $this->schema->table('geometry', function (Blueprint $table) {
             // Make sure point is not nullable
             $table->point('location')->change();
 
@@ -41,13 +51,13 @@ class UpdateLocationTable extends Migration
      */
     public function down()
     {
-        Schema::table('geometry', function (Blueprint $table) {
+        $this->schema->table('geometry', function (Blueprint $table) {
             $table->dropSpatialIndex(['location']); // either an array of column names or the index name
         });
 
-        \DB::statement('ALTER TABLE geometry ENGINE = InnoDB');
+        DB::statement('ALTER TABLE geometry ENGINE = InnoDB');
 
-        Schema::table('geometry', function (Blueprint $table) {
+        $this->schema->table('geometry', function (Blueprint $table) {
             $table->point('location')->nullable()->change();
         });
     }

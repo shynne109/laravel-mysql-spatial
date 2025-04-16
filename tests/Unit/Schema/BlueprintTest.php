@@ -1,8 +1,8 @@
 <?php
 
-namespace Schema;
+namespace Tests\Unit\Schema;
 
-use BaseTestCase;
+use Tests\Unit\BaseTestCase;
 use Grimzy\LaravelMysqlSpatial\Schema\Blueprint;
 use Illuminate\Database\Schema\ColumnDefinition;
 use Mockery;
@@ -28,11 +28,15 @@ class BlueprintTest extends BaseTestCase
             'type' => 'geometry',
             'name' => 'col',
             'srid' => null,
+            'subtype' => null,
         ]);
 
         $this->blueprint
             ->shouldReceive('addColumn')
-            ->with('geometry', 'col', ['srid' => null])
+            ->with('geometry', 'col', [
+                'srid' => null,
+                'subtype' => null,
+            ])
             ->once()
             ->andReturn($expectedCol);
 
@@ -180,15 +184,19 @@ class BlueprintTest extends BaseTestCase
             'type' => 'geometry',
             'name' => 'col',
             'srid' => 4326,
+            'subtype' => null,
         ]);
 
         $this->blueprint
             ->shouldReceive('addColumn')
-            ->with('geometry', 'col', ['srid' => 4326])
+            ->with('geometry', 'col', [
+                'srid' => 4326,
+                'subtype' => null,
+            ])
             ->once()
             ->andReturn($expectedCol);
 
-        $result = $this->blueprint->geometry('col', 4326);
+        $result = $this->blueprint->geometry('col', srid: 4326);
 
         $this->assertSame($expectedCol, $result);
     }
